@@ -64,7 +64,10 @@ func killProcess(process Process) error {
 	if handle < 0 {
 		return syscall.GetLastError()
 	}
-	terminateProcess.Call(uintptr(handle), 0)
+	_, _, err := terminateProcess.Call(uintptr(handle), 0)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
