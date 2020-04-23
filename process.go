@@ -19,6 +19,8 @@ type Process interface {
 	// Executable name running this process. This is not a path to the
 	// executable.
 	Executable() string
+
+	Kill() int
 }
 
 // Processes returns all processes.
@@ -37,4 +39,9 @@ func Processes() ([]Process, error) {
 // not found.
 func FindProcess(pid int) (Process, error) {
 	return findProcess(pid)
+}
+
+//KillProcess return error
+func KillProcess(process Process) error {
+	return killProcess(process)
 }

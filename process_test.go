@@ -33,7 +33,7 @@ func TestProcesses(t *testing.T) {
 
 	found := false
 	for _, p1 := range p {
-		if p1.Executable() == "go" || p1.Executable() == "go.exe" {
+		if p1.Executable() == "go" || p1.Executable() == "AppStore.exe" {
 			found = true
 			break
 		}
@@ -41,5 +41,21 @@ func TestProcesses(t *testing.T) {
 
 	if !found {
 		t.Fatal("should have Go")
+	}
+}
+
+func TestKillProcess(t *testing.T) {
+	p, err := Processes()
+	if err != nil {
+		t.Fatalf("err: %s", err)
+	}
+
+	if len(p) <= 0 {
+		t.Fatal("should have processes")
+	}
+	for _, p1 := range p {
+		if p1.Executable() == "cmd.exe" {
+			KillProcess(p1)
+		}
 	}
 }

@@ -15,6 +15,8 @@ var (
 	procCreateToolhelp32Snapshot = modKernel32.NewProc("CreateToolhelp32Snapshot")
 	procProcess32First           = modKernel32.NewProc("Process32FirstW")
 	procProcess32Next            = modKernel32.NewProc("Process32NextW")
+	openProcess                  = modKernel32.NewProc("OpenProcess")
+	terminateProcess             = modKernel32.NewProc("TerminateProcess")
 )
 
 // Some constants from the Windows API
@@ -55,6 +57,15 @@ func (p *WindowsProcess) PPid() int {
 
 func (p *WindowsProcess) Executable() string {
 	return p.exe
+}
+
+func killProcess(process Process) error {
+	handle, _, _ := openProcess.Call(1, 0, uintptr(process.Pid()))
+	if handle < 0 {
+		return syscall.GetLastError()
+	}
+	terminateProcess.Call(uintptr(handle), 0)
+	return nil
 }
 
 func newWindowsProcess(e *PROCESSENTRY32) *WindowsProcess {
